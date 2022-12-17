@@ -1,0 +1,35 @@
+agent:
+  podName: default
+  customJenkinsLabels: default
+  # set resources for additional agents to inherit
+  resources:
+    limits:
+      cpu: "1"
+      memory: "2048Mi"
+
+additionalAgents:
+  maven:
+    podName: maven
+    customJenkinsLabels: maven
+    # An example of overriding the jnlp container
+    # sideContainerName: jnlp
+    image: jenkins/jnlp-agent-maven
+    tag: latest
+  python:
+    podName: python
+    customJenkinsLabels: python
+    sideContainerName: python
+    image: python
+    tag: "3"
+    command: "/bin/sh -c"
+    args: "cat"
+    TTYEnabled: true
+  node:
+    podName: node
+    customJenkinsLabels: node
+    sideContainerName: node
+    image: node
+    tag: "16-alpine3.12"
+    command: "/bin/sh -c"
+    args: "cat"
+    TTYEnabled: true

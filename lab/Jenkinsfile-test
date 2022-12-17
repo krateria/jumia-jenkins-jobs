@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+	
+    stages {
+		stage('Git Clone') {
+			steps {
+				git branch: 'main', credentialsId: 'bitbucket', url: 'git@github.com:Jumia/DevOps-Challenge.git'
+			}
+		}
+
+
+        
+
+        stage('Build app') {
+            steps {
+                script {
+                    env.BUILD_MODE = "development-saas"
+                    // env.REPO = "jumia_phone_validator"
+                    // env.DOCKER_IMAGE_NAME = "${env.DOCKER_IMAGE_BASE_POPLIFTY}/${env.ENVIRONMENT}/${env.REPO}:${GIT_SHA}"
+                }
+
+                dir("jumia_phone_validator/validator-frontend") {
+                    sh "npm i"
+                    sh "npm run build"
+
+
+                // sh "cd jumia_phone_validator/validator-frontend; npm install; npm run build"
+                // sh "docker build ${env.CACHE_MODE} --build-arg MODE=${env.BUILD_MODE} -f jumia_phone_validator/validator-frontend/Dockerfile . -t ${env.DOCKER_IMAGE_NAME}"
+
+                // sh "docker login -u ${env.REGISTRY_USERNAME} -p ${env.REGISTRY_PASSWORD} ${env.REGISTRY_URL}"
+
+                // sh "docker push ${env.DOCKER_IMAGE_NAME}"
+
+            }
+        }
+    }
+}

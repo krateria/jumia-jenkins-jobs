@@ -1,0 +1,1 @@
+sudo docker build -f ./Dockerfile-jenkins-node . -t jenkins-inbound-node:latest

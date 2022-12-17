@@ -1,0 +1,10 @@
+controller:
+  serviceType: NodePort
+  servicePort: 8080
+
+  initializeOnce: true # Installs latest plugins as soon as Jenkins starts
+  additionalPlugins: ["pipeline-aws:1.43", "build-monitor-plugin:1.13+build.202205140447","docker-workflow:563.vd5d2e5c4007f"]
+  installLatestPlugins: true
+# persistence:
+#   enabled: true
+  # existingClaim: jenkins-pvc

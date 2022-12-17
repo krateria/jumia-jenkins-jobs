@@ -1,0 +1,40 @@
+pipeline {
+  agent any
+  
+  stages {
+    // stage('Git Clone') {
+    //     steps {
+    //         git branch: 'main', credentialsId: 'bitbucket', url: 'git@github.com:Jumia/DevOps-Challenge.git'
+    //     }
+    // }
+
+    stage('Build app') {
+      steps {
+        agent { label 'jenkins-agent' }
+          script {        
+              // sh "npm version"
+              sh "cat /etc/issue"
+          }
+        }
+      }
+    }
+  }
+
+
+//     stage('Build docker image') {
+//       steps {
+//         container(name: 'dind-daemon') {
+//           script {
+//             git branch: 'main', credentialsId: 'bitbucket', url: 'git@github.com:Jumia/DevOps-Challenge.git'
+//             dir("jumia_phone_validator/validator-frontend") {
+//               unstash "first-stash"
+//               sh "docker build . -t jumia-phone-validator:v1"
+//               // sh "docker tag jumia-phone-validator:v1 992122884453.dkr.ecr.eu-west-1.amazonaws.com/jumia-phone-validator:v1"
+//             }
+//             docker.withRegistry('https://992122884453.dkr.ecr.eu-west-1.amazonaws.com', 'ecr:eu-west-1:aws_faguiar') {
+//             docker.image('jumia-phone-validator:v1').push('v1')
+//           }
+//         }
+//       }
+//     }
+//   }
