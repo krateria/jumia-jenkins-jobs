@@ -49,7 +49,7 @@ pipeline {
       steps {
         container(name: 'dind-daemon') {
           script {
-            git branch: 'main', credentialsId: 'bitbucket', url: 'git@github.com:Jumia/DevOps-Challenge.git'
+            git branch: 'main', credentialsId: 'github', url: 'git@github.com:Jumia/DevOps-Challenge.git'
             dir("jumia_phone_validator/validator-frontend") {
               unstash "first-stash"
               sh "docker build . -t jumia-phone-validator:v1"
