@@ -87,7 +87,7 @@ pipeline {
             build wait: false, job: 'update-argocd', parameters: [
               string(name: 'GIT_SHA', value: String.valueOf(env.GIT_SHA).trim()),
               string(name: 'REPO', value: 'validator-front'),
-              string(name: 'IMAGE', value: "jumia-phone-validator-front:${env.GIT_SHA}")
+              string(name: 'IMAGE', value: "jumia-phone-validator-front")
               ]
           }
         }
