@@ -74,7 +74,7 @@ pipeline {
             }
 
             docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
-            docker.image(${env.DOCKER_IMAGE_NAME}).push('v1')
+            docker.image("${env.DOCKER_IMAGE_NAME}").push('v1')
 
           }
         }
