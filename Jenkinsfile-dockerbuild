@@ -34,7 +34,7 @@ pipeline {
 
         script {
           env.CACHE_MODE = "" // or --no-cache
-          env.GIT_SHA = sh(script: "git rev-parse HEAD", returnStdout: true)
+          env.GIT_SHA = sh(script: "git rev-parse --short HEAD", returnStdout: true)
         }                
       }
     }
@@ -84,7 +84,7 @@ pipeline {
 
               app = docker.build('jumia-phone-validator-front')
               docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
-                app.push("v1")
+                app.push("${env.GIT_SHA}")
               }
             }
 
