@@ -79,13 +79,19 @@ pipeline {
               sh "echo ${env.DOCKER_IMAGE_NAME}"
               sh "echo ${env.REPO}"
 
-              sh "docker build . -t ${env.DOCKER_IMAGE_NAME}:${env.GIT_SHA}"
+              // sh "docker build . -t ${env.DOCKER_IMAGE_NAME}:${env.GIT_SHA}"
               // sh "docker tag ${env.DOCKER_IMAGE_NAME} ${env.REPO}/${env.DOCKER_IMAGE_NAME}"
+
+              app = docker.bulid('jumia-phone-validator-front')
+              docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
+                app.push("${env.GIT_SHA}")
+
+              }
             }
 
-            // app = docker.bulid('jumia-phone-validator-front')
-            docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
-            docker.image("${env.DOCKER_IMAGE_NAME}:${env.GIT_SHA}").push("${env.GIT_SHA}")
+            
+            // docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
+            // docker.image("${env.DOCKER_IMAGE_NAME}").push("${env.GIT_SHA}")
 
             // build wait: false, job: 'update-argocd', parameters: [
             //   string(name: 'GIT_SHA', value: String.valueOf(env.GIT_SHA).trim()), 
