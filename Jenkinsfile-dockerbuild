@@ -84,7 +84,7 @@ pipeline {
 
               app = docker.build('jumia-phone-validator-front')
               docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
-                app.push("${env.GIT_SHA}")
+                app.push("v1")
               }
             }
 
