@@ -51,8 +51,8 @@ pipeline {
             sh "npm run build"
             // sh "mkdir build; touch build/test.txt"
             // sh "mkdir node_modules; touch node_modules/test.txt"
-            stash name: "build-stash", includes: "build/*"
-            stash name: "node_modules-stash", includes: "node_modules/*"
+            stash name: "build-stash", includes: "build/**"
+            stash name: "node_modules-stash", includes: "node_modules/**"
           }
         }
       }
@@ -71,10 +71,13 @@ pipeline {
             git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
 
             dir("jumia_phone_validator/validator-frontend") {
-
-              unstash "build-stash"
-              unstash "node_modules-stash"
+              sh "mkdir node_modules"
               
+              unstash "build-stash"
+
+              dir("node_modules") {
+                unstash "node_modules-stash"
+              }
               // sh "echo ${env.GIT_SHA}"
               // sh "echo ${env.DOCKER_IMAGE_NAME}"
               // sh "echo ${env.REPO}"
