@@ -35,7 +35,7 @@ pipeline {
         script {
           env.BUILD_MODE = "development"
           // env.REPO = "jumia_phone_validator"
-          git branch: 'main', credentialsId: '25aa7317-54cc-4083-84f0-eb2143fd7a11', url: 'git@github.com:krateria/DevOps-Challenge.git'
+          git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
           dir("jumia_phone_validator/validator-frontend") {
             sh "npm i"
             sh "npm run build"
@@ -49,7 +49,7 @@ pipeline {
       steps {
         container(name: 'dind-daemon') {
           script {
-            git branch: 'main', credentialsId: '25aa7317-54cc-4083-84f0-eb2143fd7a11', url: 'git@github.com:krateria/DevOps-Challenge.git'
+            git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
             dir("jumia_phone_validator/validator-frontend") {
               unstash "first-stash"
               sh "docker build . -t jumia-phone-validator:v1"
