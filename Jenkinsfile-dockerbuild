@@ -66,6 +66,7 @@ pipeline {
             // env.DOCKER_IMAGE_NAME = "${env.DOCKER_IMAGE_BASE_VALIDATOR}/${env.ENVIRONMENT}/${env.REPO}:v1
             // env.DOCKER_IMAGE_NAME = "jumia-phone-validator-front:${GIT_SHA}"
             env.DOCKER_IMAGE_NAME = "${env.REPO}/jumia-phone-validator-front"
+            env.GIT_SHA = sh(script: "git rev-parse --short HEAD", returnStdout: true)
             // env.DOCKER_IMAGE_NAME = "${env.DOCKER_IMAGE}/${env.ENVIRONMENT}/${env.REPO}:${GIT_SHA}"
 
             git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
