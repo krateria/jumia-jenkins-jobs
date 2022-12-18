@@ -28,6 +28,16 @@ pipeline {
     //         git branch: 'main', credentialsId: 'bitbucket', url: 'git@github.com:Jumia/DevOps-Challenge.git'
     //     }
     // }
+    stage('Setup environment') {
+      steps {
+        // load("$JENKINS_HOME/env/validator-dev.groovy")
+
+        script {
+          env.CACHE_MODE = "" // or --no-cache
+          env.GIT_SHA = sh(script: "git rev-parse HEAD", returnStdout: true)
+        }                
+      }
+    }
 
     stage('Build app') {
       agent { label 'node-build' }
@@ -49,14 +59,23 @@ pipeline {
       steps {
         container(name: 'dind-daemon') {
           script {
+            env.REPO = "992122884453.dkr.ecr.eu-west-1.amazonaws.com"
+            // env.DOCKER_IMAGE_NAME = "${env.DOCKER_IMAGE_BASE_VALIDATOR}/${env.ENVIRONMENT}/${env.REPO}:v1
+            env.DOCKER_IMAGE_NAME = "jumia-phone-validator-front:v1"
+
             git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
+
             dir("jumia_phone_validator/validator-frontend") {
+
               unstash "first-stash"
+
               sh "docker build . -t jumia-phone-validator-front:v1"
-              sh "docker tag jumia-phone-validator-front:v1 992122884453.dkr.ecr.eu-west-1.amazonaws.com/jumia-phone-validator-front:v1"
+              sh "docker tag ${env.DOCKER_IMAGE_NAME} ${env.REPO}/${env.DOCKER_IMAGE_NAME}"
             }
-            docker.withRegistry('https://992122884453.dkr.ecr.eu-west-1.amazonaws.com', 'ecr:eu-west-1:ecrkey') {
-            docker.image('jumia-phone-validator-front:v1').push('v1')
+
+            docker.withRegistry("https://"${env.REPO}", 'ecr:eu-west-1:ecrkey') {
+            docker.image(${env.DOCKER_IMAGE_NAME}).push('v1')
+
           }
         }
       }

@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    stages {
+        stage('Setup environment') {
+            steps {
+                load("$JENKINS_HOME/env/poplifty-dev.groovy")
+
+                script {
+                    env.CACHE_MODE = "" // or --no-cache
+                    env.GIT_SHA = sh(script: "git rev-parse HEAD", returnStdout: true)
+                }                
+            }
+        }
+
+        stage('Build jumia_phone_validator/validator-front') {
+            when {
+                anyOf {
+                    changeset "**/jumia_phone_validator/validator-front/*.*"
+                }
+                beforeAgent true
+            }
+            steps {
+                build wait: false, job: 'build-jumia_phone_validator_front'
+            }
+        }   
+    }
+}
