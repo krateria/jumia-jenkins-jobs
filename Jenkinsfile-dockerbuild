@@ -71,13 +71,9 @@ pipeline {
             git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
 
             dir("jumia_phone_validator/validator-frontend") {
-              sh "mkdir node_modules"
-              
               unstash "build-stash"
+              unstash "node_modules-stash"
 
-              dir("node_modules") {
-                unstash "node_modules-stash"
-              }
               // sh "echo ${env.GIT_SHA}"
               // sh "echo ${env.DOCKER_IMAGE_NAME}"
               // sh "echo ${env.REPO}"
