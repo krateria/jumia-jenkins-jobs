@@ -1,0 +1,97 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
+        apiVersion: v1 
+        kind: Pod 
+        metadata: 
+            name: dind 
+        spec: 
+            containers: 
+              - name: dind-daemon 
+                image: docker:1.12.6-dind 
+                securityContext: 
+                    privileged: true 
+                volumeMounts: 
+                  - name: docker-graph-storage 
+                    mountPath: /var/lib/docker 
+            volumes: 
+              - name: docker-graph-storage 
+                emptyDir: {}
+      '''
+    }
+  }
+  
+  stages {
+    // stage('Git Clone') {
+    //     steps {
+    //         git branch: 'main', credentialsId: 'bitbucket', url: 'git@github.com:Jumia/DevOps-Challenge.git'
+    //     }
+    // }
+    stage('Setup environment') {
+      steps {
+        // load("$JENKINS_HOME/env/validator-dev.groovy")
+
+        script {
+          env.CACHE_MODE = "" // or --no-cache
+          env.GIT_SHA = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+        }                
+      }
+    }
+
+    stage('Build app') {
+      agent { label 'node-build' }
+      steps {
+        script {
+          env.BUILD_MODE = "development"
+          // env.REPO = "jumia_phone_validator"
+          git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
+          dir("jumia_phone_validator/validator-frontend") {
+            sh "npm i"
+            sh "npm run build"
+            // sh "mkdir build; touch build/test.txt"
+            // sh "mkdir node_modules; touch node_modules/test.txt"
+            stash name: "build-stash", includes: "build/**"
+            stash name: "node_modules-stash", includes: "node_modules/**"
+          }
+        }
+      }
+    }
+
+    stage('Build docker image') {
+      steps {
+        container(name: 'dind-daemon') {
+          script {
+            env.REPO = "992122884453.dkr.ecr.eu-west-1.amazonaws.com"
+            // env.DOCKER_IMAGE_NAME = "${env.DOCKER_IMAGE_BASE_VALIDATOR}/${env.ENVIRONMENT}/${env.REPO}:v1
+            // env.DOCKER_IMAGE_NAME = "jumia-phone-validator-front:${GIT_SHA}"
+            env.DOCKER_IMAGE_NAME = "${env.REPO}/jumia-phone-validator-front"
+            // env.DOCKER_IMAGE_NAME = "${env.DOCKER_IMAGE}/${env.ENVIRONMENT}/${env.REPO}:${GIT_SHA}"
+
+            git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
+
+            dir("jumia_phone_validator/validator-frontend") {
+              unstash "build-stash"
+              unstash "node_modules-stash"
+
+              // sh "echo ${env.GIT_SHA}"
+              // sh "echo ${env.DOCKER_IMAGE_NAME}"
+              // sh "echo ${env.REPO}"
+
+              app = docker.build('jumia-phone-validator-front')
+              docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
+                app.push(String.valueOf(env.GIT_SHA).trim())
+              }
+            }
+          
+            build wait: false, job: 'update-argocd', parameters: [
+              string(name: 'GIT_SHA', value: String.valueOf(env.GIT_SHA).trim()),
+              string(name: 'REPO', value: 'validator-front'),
+              string(name: 'IMAGE', value: "jumia-phone-validator-front:${env.GIT_SHA}")
+              ]
+          }
+        }
+      }
+    }
+  }
+}
