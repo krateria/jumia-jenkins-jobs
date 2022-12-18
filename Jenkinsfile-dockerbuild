@@ -52,11 +52,11 @@ pipeline {
             git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
             dir("jumia_phone_validator/validator-frontend") {
               unstash "first-stash"
-              sh "docker build . -t jumia-phone-validator:v1"
-              sh "docker tag jumia-phone-validator:v1 992122884453.dkr.ecr.eu-west-1.amazonaws.com/jumia-phone-validator:v1"
+              sh "docker build . -t jumia-phone-validator-front:v1"
+              sh "docker tag jumia-phone-validator-front:v1 992122884453.dkr.ecr.eu-west-1.amazonaws.com/jumia-phone-validator-front:v1"
             }
             docker.withRegistry('https://992122884453.dkr.ecr.eu-west-1.amazonaws.com', 'ecr:eu-west-1:ecrkey') {
-            docker.image('jumia-phone-validator:v1').push('v1')
+            docker.image('jumia-phone-validator-front:v1').push('v1')
           }
         }
       }
