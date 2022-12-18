@@ -85,7 +85,7 @@ pipeline {
 
             // app = docker.bulid('jumia-phone-validator-front')
             docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
-            docker.image("${env.DOCKER_IMAGE_NAME}").push("${env.GIT_SHA}")
+            docker.image("${env.DOCKER_IMAGE_NAME}:${env.GIT_SHA}").push("${env.GIT_SHA}")
 
             // build wait: false, job: 'update-argocd', parameters: [
             //   string(name: 'GIT_SHA', value: String.valueOf(env.GIT_SHA).trim()), 
