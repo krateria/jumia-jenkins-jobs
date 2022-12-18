@@ -73,12 +73,20 @@ pipeline {
               unstash "build-stash"
               unstash "node_modules-stash"
               
+              sh "${env.GIT_SHA}"
+              sh "${env.DOCKER_IMAGE_NAME}"
+              sh "${env.REPO}"
               sh "docker build . -t ${env.DOCKER_IMAGE_NAME}:${env.GIT_SHA}"
               // sh "docker tag ${env.DOCKER_IMAGE_NAME} ${env.REPO}/${env.DOCKER_IMAGE_NAME}"
             }
 
             docker.withRegistry("https://${env.REPO}", 'ecr:eu-west-1:ecrkey') {
             docker.image("${env.DOCKER_IMAGE_NAME}").push("${env.GIT_SHA}")
+
+            // build wait: false, job: 'update-argocd', parameters: [
+            //   string(name: 'GIT_SHA', value: String.valueOf(env.GIT_SHA).trim()), 
+            //   string(name: 'REPO', value: '')
+            //     ]
           }
         }
       }
