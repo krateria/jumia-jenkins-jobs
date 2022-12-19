@@ -1,0 +1,9 @@
+# FROM jenkins/jnlp-agent-node:latest as jnlp
+FROM jenkins/inbound-agent:alpine as jnlp
+
+FROM postgres:15-alpine
+
+COPY --from=jnlp /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-agent
+COPY --from=jnlp /usr/share/jenkins/agent.jar /usr/share/jenkins/agent.jar
+
+ENTRYPOINT ["/usr/local/bin/jenkins-agent"]
