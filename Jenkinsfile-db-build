@@ -34,6 +34,8 @@ pipeline {
           env.DB_NAME = "postgres"
           env.DB_USER = "appdbuser"
           env.DB_PASS = "ed6aziph8EiR"
+          env.DB_CREDS = credentials('postgres')
+
         }                
       }
     }
@@ -46,9 +48,7 @@ pipeline {
           git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
           dir("jumia_phone_validator/database") {
 
-            // sh "export PGPASSWORD=${env.DB_PASS}"
-            // sh "psql -h ${env.DB_HOST} -U ${env.DB_USER} < sample.sql"
-            sh "psql postgresql://${env.DB_USER}:${env.DB_PASS}@${env.DB_HOST}:5432/${env.DB_NAME} < sample.sql"
+            sh "psql postgresql://${env.DB_CREDS_USR}:${env.DB_CREDS_PSW}@${env.DB_HOST}:5432/${env.DB_NAME} < sample.sql"
           }
         }
       }
