@@ -77,6 +77,7 @@ pipeline {
               string(name: 'GIT_SHA', value: String.valueOf(env.GIT_SHA).trim()),
               string(name: 'REPO', value: 'validator-back'),
               string(name: 'IMAGE', value: "jumia-phone-validator-back")
+              
               ]
           }
         }
