@@ -3,6 +3,9 @@ FROM jenkins/inbound-agent:alpine as jnlp
 
 FROM postgres:15-alpine
 
+RUN apk -U add openjdk11-jre git openssh-client
+RUN apk update && apk add -u libcurl curl
+
 COPY --from=jnlp /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-agent
 COPY --from=jnlp /usr/share/jenkins/agent.jar /usr/share/jenkins/agent.jar
 
