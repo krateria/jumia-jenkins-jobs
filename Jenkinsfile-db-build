@@ -1,5 +1,9 @@
 pipeline {
-  agent {
+  agent 
+  environment {
+    DB_CREDS = credentials('postgres')
+  }
+    {
     kubernetes {
       yaml '''
         apiVersion: v1 
@@ -34,8 +38,6 @@ pipeline {
           env.DB_NAME = "postgres"
           env.DB_USER = "appdbuser"
           env.DB_PASS = "ed6aziph8EiR"
-          env.DB_CREDS = credentials('postgres')
-
         }                
       }
     }
