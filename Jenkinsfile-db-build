@@ -30,7 +30,7 @@ pipeline {
         script {
           env.BUILD_MODE = "development"
           env.DB_HOST = "terraform-20221217194338834300000005.cesxoczwd6mw.eu-west-1.rds.amazonaws.com"
-          env.DB_NAME = "postgress"
+          env.DB_NAME = "postgres"
 
         }                
       }
