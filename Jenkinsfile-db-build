@@ -35,11 +35,6 @@ pipeline {
           env.DB_USER = "appdbuser"
           env.DB_PASS = "ed6aziph8EiR"
 
-          withCredentials([string(credentialsId: 'postgres', variable: 'DB_USER'),string(credentialsId: 'postgres', variable: 'DB_PASS')]) {
-            env.DB_USER = "${DB_USER}"
-            env.DB_PASS = "${DB_PASS}"
-          }
-
         }                
       }
     }
@@ -51,8 +46,9 @@ pipeline {
           env.BUILD_MODE = "development"
           git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
           dir("jumia_phone_validator/database") {
-
-            sh "psql postgresql://${env.DB_USER}:${env.DB_PASS}@${env.DB_HOST}:5432/${env.DB_NAME} < sample.sql"
+            withCredentials([usernameColonPassword(credentialsId: 'postgres', variable: 'USERPASS')]) {
+              sh "psql postgresql://${env.USERPASS_USR}:${env.DB_PASS}@${env.USERPASS_PSW}:5432/${env.DB_NAME} < sample.sql"
+            }
           }
         }
       }
