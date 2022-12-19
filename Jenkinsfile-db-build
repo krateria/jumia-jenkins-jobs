@@ -47,7 +47,7 @@ pipeline {
           git branch: 'main', credentialsId: 'e7c50e69-131e-4beb-a109-152efd32effc', url: 'git@github.com:krateria/DevOps-Challenge.git'
           dir("jumia_phone_validator/database") {
             withCredentials([usernameColonPassword(credentialsId: 'postgres', variable: 'USERPASS')]) {
-              sh "psql postgresql://${env.USERPASS_USR}:${env.DB_PASS}@${env.USERPASS_PSW}:5432/${env.DB_NAME} < sample.sql"
+              sh "psql postgresql://${USERPASS}@${env.DB_HOST}:5432/${env.DB_NAME} < sample.sql"
             }
           }
         }
